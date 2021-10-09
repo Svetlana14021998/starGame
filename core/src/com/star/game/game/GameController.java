@@ -1,5 +1,6 @@
 package com.star.game.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.star.game.screen.ScreenManager;

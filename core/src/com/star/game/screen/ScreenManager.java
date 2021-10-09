@@ -4,12 +4,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.star.game.StarGame;
+import com.star.game.StarGame;;
+import com.star.game.game.WorldRenderer;
 import com.star.game.screen.utils.Assets;
 
 public class ScreenManager {
     public enum ScreenType {
-        GAME, MENU
+        GAME, MENU, PAUSE
     }
 
     public static final int SCREEN_WIDTH = 1280;
@@ -24,6 +25,12 @@ public class ScreenManager {
     private MenuScreen menuScreen;
     private Screen targetScreen;
     private Viewport viewport;
+    private PauseScreen pauseScreen;
+    private WorldRenderer worldRenderer;
+
+    public WorldRenderer getWorldRenderer() {
+        return worldRenderer;
+    }
 
     private static ScreenManager ourInstance = new ScreenManager();
 
@@ -45,6 +52,7 @@ public class ScreenManager {
         this.gameScreen = new GameScreen(batch);
         this.menuScreen = new MenuScreen(batch);
         this.loadingScreen = new LoadingScreen(batch);
+        this.pauseScreen = new PauseScreen(batch);
     }
 
     public void resize(int width, int height) {
@@ -68,6 +76,10 @@ public class ScreenManager {
             case MENU:
                 targetScreen = menuScreen;
                 Assets.getInstance().loadAssets(ScreenType.MENU);
+                break;
+            case PAUSE:
+                targetScreen = pauseScreen;
+                Assets.getInstance().loadAssets(ScreenType.PAUSE);
                 break;
         }
     }

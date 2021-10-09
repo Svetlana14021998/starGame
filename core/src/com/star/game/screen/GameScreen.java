@@ -6,7 +6,7 @@ import com.star.game.game.WorldRenderer;
 import com.star.game.screen.utils.Assets;
 
 
-public class GameScreen extends AbstractScreen{
+public class GameScreen extends AbstractScreen {
     private GameController gameController;
     private WorldRenderer worldRenderer;
 
@@ -24,6 +24,15 @@ public class GameScreen extends AbstractScreen{
     @Override
     public void render(float delta) {
         gameController.update(delta);
+            worldRenderer.render();
+    }
+
+    @Override
+    public void pause() {
         worldRenderer.render();
+    }
+
+    @Override
+    public void resume() {
     }
 }
