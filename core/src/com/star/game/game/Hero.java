@@ -15,6 +15,16 @@ import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
 public class Hero {
+    public enum Skill {
+        HP_MAX(20), HP(20), WEAPON(100);
+
+        int cost;
+
+        Skill(int cost) {
+            this.cost = cost;
+        }
+    }
+
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;
@@ -24,19 +34,32 @@ public class Hero {
     private float fireTimer;
     private int score;
     private int scoreView;
+    private int hpMax;
     private int hp;
     private int money;
     private StringBuilder stringBuilder;
     private Circle hitArea;
     private Weapon currentWeapon;
-    private boolean fl = true;
+    private Shop shop;
+    private Weapon[] weapons;
+    private int weaponNum;
+    // private boolean pause = false;
 
-    public boolean isFl() {
-        return fl;
+
+    public boolean getPause() {
+        return gc.getPause();
     }
 
-    public void setFl(boolean fl) {
-        this.fl = fl;
+    public void setPause(boolean pause) {
+        gc.setPause(pause);
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public int getMoney() {
+        return money;
     }
 
     public Circle getHitArea() {
@@ -63,18 +86,17 @@ public class Hero {
         return position;
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
+    public boolean isAlive() {
+        return hp > 0;
     }
 
-    public int getHp() {
-        return hp;
+    public boolean isMoneyEnough(int amount) {
+        return money >= amount;
     }
 
-    public Weapon getCurrentWeapon() {
-        return currentWeapon;
+    public void decreaseMoney(int amount) {
+        money -= amount;
     }
-
 
     public Hero(GameController gc) {
         this.gc = gc;
@@ -83,18 +105,17 @@ public class Hero {
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
         this.enginePower = 500.0f;
-        this.hp = 100;
+        this.hpMax = 100;
+        this.hp = hpMax;
+        this.money = 100;
+        this.shop = new Shop(this);
         this.stringBuilder = new StringBuilder();
         this.hitArea = new Circle(position, 26);
-        this.currentWeapon = new Weapon(
-                gc, this, "Laser", 0.2f, 1, 600, 300,
-                new Vector3[]{
-                        new Vector3(28, 0, 0),
-                        new Vector3(28, 90, 20),
-                        new Vector3(28, -90, -20)
-                }
-        );
+        createWeapons();
+        this.weaponNum = 0;
+        this.currentWeapon = weapons[weaponNum];
     }
+
 
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, 1, 1,
@@ -129,15 +150,31 @@ public class Hero {
         }
     }
 
+    public boolean upgrade(Skill skill) {
+        switch (skill) {
+            case HP_MAX:
+                hpMax += 10;
+                return true;
+            case HP:
+                hp += 10;
+                return true;
+            case WEAPON:
+                if (weaponNum < weapons.length - 1) {
+                    weaponNum++;
+                    currentWeapon = weapons[weaponNum];
+                    return true;
+                }
+        }
+        return false;
+    }
+
     public void update(float dt) {
         fireTimer += dt;
         updateScore(dt);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.CAPS_LOCK)) {
-            fl = !fl;
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
         }
-
-
         if (Gdx.input.isKeyPressed(Input.Keys.P)) {
             tryToFire();
         }
@@ -151,6 +188,14 @@ public class Hero {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
             velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            velocity.x += MathUtils.cosDeg(180 - angle) * enginePower * dt;
+            velocity.y += MathUtils.sinDeg(180 - angle) * enginePower * dt;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
+            shop.setVisible(true);
+            setPause(true);
         }
         position.mulAdd(velocity, dt);
         hitArea.setPosition(position);
@@ -212,5 +257,39 @@ public class Hero {
             position.y = ScreenManager.SCREEN_HEIGHT - 32f;
             velocity.y *= -1;
         }
+    }
+
+    private void createWeapons() {
+        weapons = new Weapon[]{
+                new Weapon(
+                        gc, this, "Laser", 0.2f, 1, 600, 300,
+                        new Vector3[]{
+                                new Vector3(28, 90, 0),
+                                new Vector3(28, -90, 0)
+                        }),
+                new Weapon(
+                        gc, this, "Laser", 0.2f, 1, 600, 300,
+                        new Vector3[]{
+                                new Vector3(28, 0, 0),
+                                new Vector3(28, 90, 20),
+                                new Vector3(28, -90, -20)
+                        }),
+                new Weapon(
+                        gc, this, "Laser", 0.2f, 1, 600, 500,
+                        new Vector3[]{
+                                new Vector3(28, 0, 0),
+                                new Vector3(28, 90, 10),
+                                new Vector3(28, 90, 20),
+                                new Vector3(28, -90, -10),
+                                new Vector3(28, -90, -20)
+                        }),
+                new Weapon(
+                        gc, this, "Laser", 0.1f, 2, 600, 1000,
+                        new Vector3[]{
+                                new Vector3(28, 0, 0),
+                                new Vector3(28, 90, 16),
+                                new Vector3(28, -90, -16)
+                        }),
+        };
     }
 }

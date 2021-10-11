@@ -24,8 +24,12 @@ public class Background {
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - gc.getHero().getVelocity().x * 0.1) * dt;
-            position.y += (velocity.y - gc.getHero().getVelocity().y * 0.1) * dt;
+            if (gc != null) {
+                position.x += (velocity.x - gc.getHero().getVelocity().x * 0.1) * dt;
+                position.y += (velocity.y - gc.getHero().getVelocity().y * 0.1) * dt;
+            } else {
+                position.mulAdd(velocity, dt);
+            }
 
             if (position.x < -200) {
                 position.x = ScreenManager.SCREEN_WIDTH + 200;
@@ -69,5 +73,9 @@ public class Background {
         for (int i = 0; i < stars.length; i++) {
             stars[i].update(dt);
         }
+    }
+
+    public void dispose() {
+        textureCosmos.dispose();
     }
 }

@@ -1,12 +1,8 @@
 package com.star.game.game;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.star.game.screen.MenuScreen;
-import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
 public class WorldRenderer {
@@ -14,10 +10,6 @@ public class WorldRenderer {
     private SpriteBatch batch;
     private BitmapFont font32;
     private StringBuilder stringBuilder;
-
-    private GameController getGc() {
-        return gc;
-    }
 
     public WorldRenderer(GameController gc, SpriteBatch batch) {
         this.gc = gc;
@@ -29,7 +21,6 @@ public class WorldRenderer {
     public void render() {
         ScreenUtils.clear(0, 0.2f, 0.5f, 1);
         batch.begin();
-        if (gc.getHero().isFl()){
         gc.getBackground().render(batch);
         gc.getAsteroidController().render(batch);
         gc.getHero().render(batch);
@@ -37,10 +28,7 @@ public class WorldRenderer {
         gc.getPowerUpsController().render(batch);
         gc.getParticleController().render(batch);
         gc.getHero().renderGUI(batch, font32);
-    }
-        else{
-            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.PAUSE);}
-
         batch.end();
+        gc.getStage().draw();
     }
 }

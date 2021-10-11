@@ -1,8 +1,10 @@
 package com.star.game.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.star.game.screen.ScreenManager;
 
 public class GameController {
@@ -13,6 +15,18 @@ public class GameController {
     private PowerUpsController powerUpsController;
     private Hero hero;
     private Vector2 tmpVec;
+    private Stage stage;
+    private boolean pause;
+    public boolean getPause() {
+        return pause;
+    }
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
 
     public PowerUpsController getPowerUpsController() {
         return powerUpsController;
@@ -38,13 +52,16 @@ public class GameController {
         return background;
     }
 
-    public GameController() {
+    public GameController(SpriteBatch batch) {
         this.background = new Background(this);
         this.hero = new Hero(this);
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
         this.particleController = new ParticleController();
         this.powerUpsController = new PowerUpsController(this);
+        this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        this.stage.addActor(hero.getShop());
+        Gdx.input.setInputProcessor(stage);
         this.tmpVec = new Vector2(0.0f, 0.0f);
         for (int i = 0; i < 3; i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
@@ -54,6 +71,9 @@ public class GameController {
     }
 
     public void update(float dt) {
+        if (pause){
+            return;
+        }
         background.update(dt);
         hero.update(dt);
         asteroidController.update(dt);
@@ -61,6 +81,10 @@ public class GameController {
         powerUpsController.update(dt);
         particleController.update(dt);
         checkCollisions();
+        if (!hero.isAlive()) {
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);
+        }
+        stage.act(dt);
     }
 
     public void checkCollisions() {
@@ -117,13 +141,19 @@ public class GameController {
 
         for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
             PowerUp p = powerUpsController.getActiveList().get(i);
-            if (hero.getHitArea().contains(p.getPosition())){
+            if (hero.getHitArea().contains(p.getPosition())) {
                 hero.consume(p);
                 particleController.getEffectBuilder().takePowerUpEffect(
-                        p.getPosition().x, p.getPosition().y);
+                        p.getPosition().x, p.getPosition().y, p.getType());
                 p.deactivate();
             }
         }
 
     }
+
+    public void dispose() {
+        background.dispose();
+    }
+
+
 }
