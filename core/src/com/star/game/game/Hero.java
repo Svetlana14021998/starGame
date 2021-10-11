@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.star.game.screen.GameScreen;
 import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
@@ -28,7 +29,15 @@ public class Hero {
     private StringBuilder stringBuilder;
     private Circle hitArea;
     private Weapon currentWeapon;
+    private boolean fl = true;
 
+    public boolean isFl() {
+        return fl;
+    }
+
+    public void setFl(boolean fl) {
+        this.fl = fl;
+    }
 
     public Circle getHitArea() {
         return hitArea;
@@ -123,6 +132,12 @@ public class Hero {
     public void update(float dt) {
         fireTimer += dt;
         updateScore(dt);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.CAPS_LOCK)) {
+            fl = !fl;
+
+        }
+
+
         if (Gdx.input.isKeyPressed(Input.Keys.P)) {
             tryToFire();
         }
