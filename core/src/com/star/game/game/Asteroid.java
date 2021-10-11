@@ -29,6 +29,7 @@ public class Asteroid implements Poolable {
     public float getScale() {
         return scale;
     }
+
     public int getHpMax() {
         return hpMax;
     }
@@ -71,7 +72,7 @@ public class Asteroid implements Poolable {
     public void activate(float x, float y, float vx, float vy, float scale) {
         this.position.set(x, y);
         this.velocity.set(vx, vy);
-        this.hpMax = (int) (7 * scale);
+        this.hpMax = (int) (7 * scale * gc.getLevel());//зависомость живучести астероида от уровня игры
         this.hp = hpMax;
         this.angle = MathUtils.random(0.0f, 360.0f);
         this.rotationSpeed = MathUtils.random(-180.0f, 180.0f);

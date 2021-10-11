@@ -43,15 +43,15 @@ public class Hero {
     private Shop shop;
     private Weapon[] weapons;
     private int weaponNum;
-    // private boolean pause = false;
+    private Circle searchArea;
 
-
-    public boolean getPause() {
-        return gc.getPause();
-    }
 
     public void setPause(boolean pause) {
         gc.setPause(pause);
+    }
+
+    public Circle getSearchArea() {
+        return searchArea;
     }
 
     public Shop getShop() {
@@ -111,6 +111,7 @@ public class Hero {
         this.shop = new Shop(this);
         this.stringBuilder = new StringBuilder();
         this.hitArea = new Circle(position, 26);
+        this.searchArea = new Circle(position, 150);//поле захвата powerups
         createWeapons();
         this.weaponNum = 0;
         this.currentWeapon = weapons[weaponNum];
@@ -199,6 +200,7 @@ public class Hero {
         }
         position.mulAdd(velocity, dt);
         hitArea.setPosition(position);
+        searchArea.setPosition(position);
         float stopKoef = 1.0f - 1.0f * dt;
         if (stopKoef < 0) {
             stopKoef = 0;
