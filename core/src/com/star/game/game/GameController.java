@@ -17,9 +17,12 @@ public class GameController {
     private Vector2 tmpVec;
     private Stage stage;
     private boolean pause;
-    public boolean getPause() {
-        return pause;
+    private int level;
+
+    public int getLevel() {
+        return level;
     }
+
     public void setPause(boolean pause) {
         this.pause = pause;
     }
@@ -61,9 +64,14 @@ public class GameController {
         this.powerUpsController = new PowerUpsController(this);
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.stage.addActor(hero.getShop());
+        this.level = 1;
         Gdx.input.setInputProcessor(stage);
         this.tmpVec = new Vector2(0.0f, 0.0f);
-        for (int i = 0; i < 3; i++) {
+        createAsteroids();
+    }
+
+    public void createAsteroids() {
+        for (int i = 0; i < level; i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
                     MathUtils.random(-200, 200), MathUtils.random(-200, 200), 1.0f);
@@ -71,7 +79,7 @@ public class GameController {
     }
 
     public void update(float dt) {
-        if (pause){
+        if (pause) {
             return;
         }
         background.update(dt);
@@ -83,6 +91,10 @@ public class GameController {
         checkCollisions();
         if (!hero.isAlive()) {
             ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);
+        }
+        if (getAsteroidController().getActiveList().size() == 0) {
+            level++;
+            createAsteroids();
         }
         stage.act(dt);
     }
@@ -105,7 +117,7 @@ public class GameController {
                 if (a.takeDamage(2)) {
                     hero.addScore(a.getHpMax() * 20);
                 }
-                hero.takeDamage(2);
+                hero.takeDamage(2 * level);//зависимоть урона от уровня игры
             }
         }
 
@@ -141,6 +153,10 @@ public class GameController {
 
         for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
             PowerUp p = powerUpsController.getActiveList().get(i);
+            if (hero.getSearchArea().contains(p.getPosition())) {
+                tmpVec.set(hero.getPosition()).sub(p.getPosition()).nor();
+                p.getVelocity().mulAdd(tmpVec, 100.0f);
+            }
             if (hero.getHitArea().contains(p.getPosition())) {
                 hero.consume(p);
                 particleController.getEffectBuilder().takePowerUpEffect(
