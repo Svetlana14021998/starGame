@@ -1,7 +1,9 @@
 package com.star.game.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.star.game.screen.utils.Assets;
 
 public class Weapon {
     private GameController gc;
@@ -13,6 +15,7 @@ public class Weapon {
     private int maxBullets;
     private int curBullets;
     private Vector3[] slots;
+    private Sound shootSound;
 
     public float getFirePeriod() {
         return firePeriod;
@@ -38,11 +41,13 @@ public class Weapon {
         this.maxBullets = maxBullets;
         this.curBullets = maxBullets;
         this.slots = slots;
+        this.shootSound = Assets.getInstance().getAssetManager().get("audio/shoot.mp3");
     }
 
     public void fire() {
         if (curBullets > 0) {
             curBullets--;
+            shootSound.play();
 
             for (int i = 0; i < slots.length; i++) {
                 float x, y, vx, vy;

@@ -9,14 +9,13 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.StringBuilder;
-import com.star.game.screen.GameScreen;
+import com.badlogic.gdx.utils.StringBuilder;;
 import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
 public class Hero {
     public enum Skill {
-        HP_MAX(20), HP(20), WEAPON(100);
+        HP_MAX(20), HP(20), WEAPON(100), MAGNET(50);
 
         int cost;
 
@@ -126,10 +125,11 @@ public class Hero {
     public void renderGUI(SpriteBatch batch, BitmapFont font) {
         stringBuilder.clear();
         stringBuilder.append("SCORE: ").append(scoreView).append("\n");
-        stringBuilder.append("HP: ").append(hp).append("\n");
+        stringBuilder.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
         stringBuilder.append("MONEY: ").append(money).append("\n");
         stringBuilder.append("BULLETS: ").append(currentWeapon.getCurBullets()).append(" / ")
                 .append(currentWeapon.getMaxBullets()).append("\n");
+        stringBuilder.append("MAGNETIC: ").append((int) searchArea.radius).append("\n");
         font.draw(batch, stringBuilder, 20, 700);
     }
 
@@ -141,6 +141,9 @@ public class Hero {
         switch (p.getType()) {
             case MEDKIT:
                 hp += p.getPower();
+                if (hp > hpMax) {
+                    hp = hpMax;
+                }
                 break;
             case MONEY:
                 money += p.getPower();
@@ -157,17 +160,26 @@ public class Hero {
                 hpMax += 10;
                 return true;
             case HP:
-                hp += 10;
-                return true;
+                if (hp < hpMax) {
+                    hp += 10;
+                    if (hp > hpMax) {
+                        hp = hpMax;
+                    }
+                    return true;
+                }
             case WEAPON:
                 if (weaponNum < weapons.length - 1) {
                     weaponNum++;
                     currentWeapon = weapons[weaponNum];
                     return true;
                 }
+            case MAGNET:
+                searchArea.radius += 10;
+                return true;
         }
         return false;
     }
+
 
     public void update(float dt) {
         fireTimer += dt;

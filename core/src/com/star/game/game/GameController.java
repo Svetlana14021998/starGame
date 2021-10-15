@@ -1,11 +1,13 @@
 package com.star.game.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.star.game.screen.ScreenManager;
+import com.star.game.screen.utils.Assets;
 
 public class GameController {
     private Background background;
@@ -18,6 +20,12 @@ public class GameController {
     private Stage stage;
     private boolean pause;
     private int level;
+    private float roundTimer;
+    private Music music;
+
+    public float getRoundTimer() {
+        return roundTimer;
+    }
 
     public int getLevel() {
         return level;
@@ -67,11 +75,15 @@ public class GameController {
         this.level = 1;
         Gdx.input.setInputProcessor(stage);
         this.tmpVec = new Vector2(0.0f, 0.0f);
+        this.roundTimer = 0.0f;
+        this.music = Assets.getInstance().getAssetManager().get("audio/mortal.mp3");
+        this.music.setLooping(true);
+        this.music.play();
         createAsteroids();
     }
 
     public void createAsteroids() {
-        for (int i = 0; i < level; i++) {
+        for (int i = 0; i < (level <= 3 ? level : 3); i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
                     MathUtils.random(-200, 200), MathUtils.random(-200, 200), 1.0f);
@@ -82,6 +94,7 @@ public class GameController {
         if (pause) {
             return;
         }
+        roundTimer += dt;
         background.update(dt);
         hero.update(dt);
         asteroidController.update(dt);
@@ -95,6 +108,7 @@ public class GameController {
         if (getAsteroidController().getActiveList().size() == 0) {
             level++;
             createAsteroids();
+            roundTimer = 0.0f;
         }
         stage.act(dt);
     }
