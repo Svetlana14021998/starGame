@@ -97,6 +97,22 @@ public class Shop extends Group {
         btnHpMax.setPosition(20, 320);
         this.addActor(btnHpMax);
 
+        final TextButton btnTimer = new TextButton("Time Help", textButtonStyle);
+        btnTimer.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (hero.isMoneyEnough(Hero.Skill.TIMER.cost)) {
+                    if (hero.getTimer() >= 4) {
+                        if (hero.upgrade(Hero.Skill.TIMER)) {
+                            hero.decreaseMoney(Hero.Skill.TIMER.cost);
+                        }
+                    }
+                }
+            }
+        });
+
+        btnTimer.setPosition(120, 320);
+        this.addActor(btnTimer);
 
         final TextButton btnClose = new TextButton("X", textButtonStyle);
         final Shop thisShop = this;

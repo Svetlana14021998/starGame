@@ -1,6 +1,8 @@
 package com.star.game.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
@@ -17,6 +19,8 @@ public class GameOverScreen extends AbstractScreen {
     private BitmapFont font24;
     private Hero defeatedHero;
     private StringBuilder stringBuilder;
+    private Music music;//музыка окончания игры
+    private Sound sound;//звук окончания игры
 
     public void setDefeatedHero(Hero defeatedHero) {
         this.defeatedHero = defeatedHero;
@@ -33,6 +37,11 @@ public class GameOverScreen extends AbstractScreen {
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
         this.font48 = Assets.getInstance().getAssetManager().get("fonts/font48.ttf");
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
+        this.sound = Assets.getInstance().getAssetManager().get("audio/gameoversound.mp3");
+        this.sound.play();
+        this.music = Assets.getInstance().getAssetManager().get("audio/gameover.mp3");
+        this.music.setLooping(true);
+        this.music.play();
     }
 
     public void update(float dt) {

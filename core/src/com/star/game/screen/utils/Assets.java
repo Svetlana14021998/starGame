@@ -46,6 +46,8 @@ public class Assets {
                 break;
             case GAMEOVER:
                 assetManager.load("images/game.pack", TextureAtlas.class);
+                assetManager.load("audio/gameover.mp3", Music.class);
+                assetManager.load("audio/gameoversound.mp3", Sound.class);
                 createStandardFont(72);
                 createStandardFont(48);
                 createStandardFont(24);
@@ -54,6 +56,9 @@ public class Assets {
                 assetManager.load("images/game.pack", TextureAtlas.class);
                 assetManager.load("audio/mortal.mp3", Music.class);
                 assetManager.load("audio/shoot.mp3", Sound.class);
+                assetManager.load("audio/explosion.mp3", Sound.class);
+                assetManager.load("audio/money.mp3", Sound.class);
+                assetManager.load("audio/nextlevel.mp3", Sound.class);
                 createStandardFont(32);
                 createStandardFont(24);
                 createStandardFont(72);

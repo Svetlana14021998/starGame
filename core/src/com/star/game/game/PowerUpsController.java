@@ -35,6 +35,9 @@ public class PowerUpsController extends ObjectPool<PowerUp> {
             getActiveElement().activate(PowerUp.Type.values()[MathUtils.random(0, 2)], x, y, 30);
         }
     }
+    public void create(float x, float y) {
+            getActiveElement().activate(PowerUp.Type.values()[MathUtils.random(0, 2)], x, y, 30);
+    }
 
     public void update(float dt) {
         for (int i = 0; i < activeList.size(); i++) {

@@ -17,6 +17,13 @@ powerups
   orig: 360, 240
   offset: 0, 0
   index: -1
+nlo
+  rotate: false
+  xy: 260, 2
+  size: 176, 104
+  orig: 176, 104
+  offset: 0, 0
+  index: -1
 simpleButton
   rotate: false
   xy: 2, 502
@@ -26,35 +33,35 @@ simpleButton
   index: -1
 shortButton
   rotate: false
-  xy: 260, 2
+  xy: 260, 108
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 ship
   rotate: false
-  xy: 342, 2
+  xy: 438, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smButton
   rotate: false
-  xy: 260, 84
+  xy: 342, 108
   size: 120, 32
   orig: 120, 32
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 408, 2
+  xy: 438, 68
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star16
   rotate: false
-  xy: 408, 36
+  xy: 472, 68
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

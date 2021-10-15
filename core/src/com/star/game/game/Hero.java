@@ -15,7 +15,7 @@ import com.star.game.screen.utils.Assets;
 
 public class Hero {
     public enum Skill {
-        HP_MAX(20), HP(20), WEAPON(100), MAGNET(50);
+        HP_MAX(20), HP(20), WEAPON(100), MAGNET(50), TIMER(3);
 
         int cost;
 
@@ -43,7 +43,16 @@ public class Hero {
     private Weapon[] weapons;
     private int weaponNum;
     private Circle searchArea;
+    private BotHelper botHelper;
 
+
+    public float getTimer() {
+        return botHelper.getMaxHelpTimer();
+    }
+
+    public void setTimer() {
+        botHelper.setMaxHelpTimer(3);
+    }
 
     public void setPause(boolean pause) {
         gc.setPause(pause);
@@ -97,7 +106,7 @@ public class Hero {
         money -= amount;
     }
 
-    public Hero(GameController gc) {
+    public Hero(GameController gc, BotHelper botHelper) {
         this.gc = gc;
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");
         this.position = new Vector2(640, 360);
@@ -114,6 +123,7 @@ public class Hero {
         createWeapons();
         this.weaponNum = 0;
         this.currentWeapon = weapons[weaponNum];
+        this.botHelper = botHelper;
     }
 
 
@@ -130,6 +140,7 @@ public class Hero {
         stringBuilder.append("BULLETS: ").append(currentWeapon.getCurBullets()).append(" / ")
                 .append(currentWeapon.getMaxBullets()).append("\n");
         stringBuilder.append("MAGNETIC: ").append((int) searchArea.radius).append("\n");
+        stringBuilder.append("TIMER: ").append((int) botHelper.getMaxHelpTimer()).append("\n");
         font.draw(batch, stringBuilder, 20, 700);
     }
 
@@ -156,6 +167,11 @@ public class Hero {
 
     public boolean upgrade(Skill skill) {
         switch (skill) {
+            case TIMER:
+                if (getTimer() >= 4) {
+                    setTimer();
+                }
+                return true;
             case HP_MAX:
                 hpMax += 10;
                 return true;
@@ -178,6 +194,7 @@ public class Hero {
                 return true;
         }
         return false;
+
     }
 
 
@@ -203,8 +220,8 @@ public class Hero {
             velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            velocity.x += MathUtils.cosDeg(180 - angle) * enginePower * dt;
-            velocity.y += MathUtils.sinDeg(180 - angle) * enginePower * dt;
+            velocity.x += MathUtils.cosDeg(180 + angle) * enginePower * dt;
+            velocity.y += MathUtils.sinDeg(180 + angle) * enginePower * dt;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
             shop.setVisible(true);
