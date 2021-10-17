@@ -2,6 +2,7 @@ package com.star.game.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -12,6 +13,7 @@ import com.star.game.screen.utils.Assets;
 public class GameController {
     private Background background;
     private AsteroidController asteroidController;
+    private BotHelper botHelper;
     private BulletController bulletController;
     private ParticleController particleController;
     private PowerUpsController powerUpsController;
@@ -21,7 +23,14 @@ public class GameController {
     private boolean pause;
     private int level;
     private float roundTimer;
+    private float helpTimer;
     private Music music;
+    private Sound powerupsound;//звук для подбора powerups
+    private Sound nextlevelsound;//звук перехода на новый уровень
+
+    public BotHelper getBotHelper() {
+        return botHelper;
+    }
 
     public float getRoundTimer() {
         return roundTimer;
@@ -65,9 +74,11 @@ public class GameController {
 
     public GameController(SpriteBatch batch) {
         this.background = new Background(this);
-        this.hero = new Hero(this);
+        this.botHelper = new BotHelper(this);
+        this.hero = new Hero(this,botHelper);
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
+        this.botHelper = new BotHelper(this);
         this.particleController = new ParticleController();
         this.powerUpsController = new PowerUpsController(this);
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
@@ -76,6 +87,9 @@ public class GameController {
         Gdx.input.setInputProcessor(stage);
         this.tmpVec = new Vector2(0.0f, 0.0f);
         this.roundTimer = 0.0f;
+        this.helpTimer = 0.0f;
+        this.powerupsound = Assets.getInstance().getAssetManager().get("audio/money.mp3");
+        this.nextlevelsound = Assets.getInstance().getAssetManager().get("audio/nextlevel.mp3");
         this.music = Assets.getInstance().getAssetManager().get("audio/mortal.mp3");
         this.music.setLooping(true);
         this.music.play();
@@ -94,23 +108,35 @@ public class GameController {
         if (pause) {
             return;
         }
+        helpTimer += dt;
         roundTimer += dt;
         background.update(dt);
         hero.update(dt);
+        botHelper.update(dt);
         asteroidController.update(dt);
         bulletController.update(dt);
         powerUpsController.update(dt);
         particleController.update(dt);
         checkCollisions();
+        createHelp();
         if (!hero.isAlive()) {
             ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);
         }
         if (getAsteroidController().getActiveList().size() == 0) {
             level++;
+            nextlevelsound.play();
             createAsteroids();
             roundTimer = 0.0f;
         }
         stage.act(dt);
+    }
+
+    public void createHelp() {
+
+        if (tmpVec.set(hero.getPosition()).sub(botHelper.getPosition()).len() < botHelper.getHelpArea() && helpTimer > botHelper.getMaxHelpTimer()) {
+            powerUpsController.create(botHelper.getPosition().x, botHelper.getPosition().y);
+            helpTimer = 0.0f;
+        }
     }
 
     public void checkCollisions() {
@@ -176,6 +202,7 @@ public class GameController {
                 particleController.getEffectBuilder().takePowerUpEffect(
                         p.getPosition().x, p.getPosition().y, p.getType());
                 p.deactivate();
+                powerupsound.play();
             }
         }
 

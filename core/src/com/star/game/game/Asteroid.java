@@ -1,5 +1,6 @@
 package com.star.game.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
@@ -22,6 +23,7 @@ public class Asteroid implements Poolable {
     private float scale;//масштаб
     private boolean active;
     private Circle hitArea;
+    private Sound explosionSound;//звук уничтожения астероида
 
     private final float BASE_SIZE = 256.0f;
     private final float BASE_RADIUS = BASE_SIZE / 2;
@@ -58,6 +60,7 @@ public class Asteroid implements Poolable {
         this.hitArea = new Circle(0, 0, 0);
         this.active = false;
         this.texture = Assets.getInstance().getAtlas().findRegion("asteroid");
+        this.explosionSound = Assets.getInstance().getAssetManager().get("audio/explosion.mp3");
     }
 
     public void render(SpriteBatch batch) {
@@ -67,6 +70,7 @@ public class Asteroid implements Poolable {
 
     public void deactivate() {
         active = false;
+        explosionSound.play();
     }
 
     public void activate(float x, float y, float vx, float vy, float scale) {
