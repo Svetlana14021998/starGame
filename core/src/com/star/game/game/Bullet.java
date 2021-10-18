@@ -10,6 +10,11 @@ public class Bullet implements Poolable {
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
+    private Ship owner;
+
+    public Ship getOwner() {
+        return owner;
+    }
 
     public Vector2 getVelocity() {
         return velocity;
@@ -35,24 +40,19 @@ public class Bullet implements Poolable {
         active = false;
     }
 
-    public void activate(float x, float y, float vx, float vy) {
+    public void activate(Ship owner, float x, float y, float vx, float vy) {
         position.set(x, y);
         velocity.set(vx, vy);
         active = true;
+        this.owner = owner;
     }
 
     public void update(float dt) {
         position.mulAdd(velocity, dt);
-        float bx = position.x ;
-        float by = position.y ;
-        gc.getParticleController().setup(
-                bx + MathUtils.random(-4, 4), by + MathUtils.random(-4, 4),
-                velocity.x * -0.3f + MathUtils.random(-20, 20), velocity.y * -0.3f + MathUtils.random(-20, 20),
-                0.05f,
-                1.5f, 0.2f,
-                1.0f, 0.3f, 0.0f, 1.0f,
-                1.0f, 1.0f, 1.0f, 1.0f
-        );
+        float bx = position.x;
+        float by = position.y;
+        gc.getParticleController().getEffectBuilder()
+                .createBulletTrace(owner.currentWeapon.getTitle(), position, velocity);
 
 
         if (position.x < -20 || position.x > ScreenManager.SCREEN_WIDTH + 20 ||
