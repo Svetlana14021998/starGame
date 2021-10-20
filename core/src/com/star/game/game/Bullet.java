@@ -52,7 +52,7 @@ public class Bullet implements Poolable {
         float bx = position.x;
         float by = position.y;
         gc.getParticleController().getEffectBuilder()
-                .createBulletTrace(owner.currentWeapon.getTitle(), position, velocity);
+                .createBulletTrace(owner.getWeaponType(), position, velocity);
 
 
         if (position.x < -20 || position.x > ScreenManager.SCREEN_WIDTH + 20 ||
@@ -62,4 +62,3 @@ public class Bullet implements Poolable {
     }
 
 }
-

@@ -15,9 +15,32 @@ public class ParticleController extends ObjectPool<Particle> {
             for (int i = 0; i < 15; i++) {
                 float randomAngle = MathUtils.random(0, 6.28f);
                 float randomSpeed = MathUtils.random(0, 50.0f);
-                setup(x, y, (float) Math.cos(randomAngle) * randomSpeed, (float) Math.sin(randomAngle) * randomSpeed, 1.2f, 2.0f, 1.8f, 1, 0, 0, 1, 1, 0, 0, 0.2f);
+                setup(x, y, (float) Math.cos(randomAngle) * randomSpeed, (float) Math.sin(randomAngle) * randomSpeed,
+                        1.2f, 2.0f, 1.8f, 1, 0, 0, 1, 1, 0, 0, 0.2f);
             }
         }
+
+        public void botIsDead(float x, float y) {//прикольный разноцветный взрыв
+            for (int i = 0; i < 16; i++) {
+                float angle = 6.9f / 16.0f * i;
+                setup(x, y, (float) Math.cos(angle) * 100, (float) Math.sin(angle) * 100,
+                        1.5f, 3.0f, 1.5f,
+                        0, 1, 0, 1,
+                        0, 1, 0.3f, 0.0f);
+                angle = 10.5f / 16.0f * i;
+                setup(x, y, (float) Math.cos(angle) * 100, (float) Math.sin(angle) * 100,
+                        1.5f, 3.0f, 2.8f,
+                        1, 1, 0, 1,
+                        1, 0.5f, 0, 0.5f);
+                angle = 1.0f * i;
+                setup(x, y, (float) Math.cos(angle) * 100, (float) Math.sin(angle) * 100,
+                        1.5f, 3.0f, 2.8f,
+                        1, 0, 0, 1,
+                        1, 0, 1, 0.5f);
+            }
+
+        }
+
 
         public void takePowerUpEffect(float x, float y, PowerUp.Type type) {
             switch (type) {
@@ -64,26 +87,40 @@ public class ParticleController extends ObjectPool<Particle> {
             );
         }
 
-        public void createBulletTrace(String weaponTitle, Vector2 bulletPos, Vector2 bulletVel) {
-            if (weaponTitle.equals("Laser")) {
-                setup(
-                        bulletPos.x + MathUtils.random(-4, 4), bulletPos.y + MathUtils.random(-4, 4),
-                        bulletVel.x * -0.3f + MathUtils.random(-20, 20), bulletVel.y * -0.3f + MathUtils.random(-20, 20),
-                        0.05f,
-                        1.5f, 0.2f,
-                        1.0f, 0.3f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f, 1.0f
-                );
-            }
-            if (weaponTitle.equals("GreenLaser")) {
-                setup(
-                        bulletPos.x + MathUtils.random(-4, 4), bulletPos.y + MathUtils.random(-4, 4),
-                        bulletVel.x * -0.3f + MathUtils.random(-20, 20), bulletVel.y * -0.3f + MathUtils.random(-20, 20),
-                        0.05f,
-                        1.2f, 2.2f,
-                        0.2f, 1.0f, 0.2f, 1.0f,
-                        0.3f, 1.0f, 0.3f, 1.0f
-                );
+        public void createBulletTrace(WeaponType type, Vector2 bulletPos, Vector2 bulletVel) {
+            switch (type) {
+                case LASER:
+                    setup(
+                            bulletPos.x + MathUtils.random(-4, 4), bulletPos.y + MathUtils.random(-4, 4),
+                            bulletVel.x * -0.3f + MathUtils.random(-20, 20), bulletVel.y * -0.3f + MathUtils.random(-20, 20),
+                            0.05f,
+                            1.5f, 0.2f,
+                            1.0f, 0.3f, 0.0f, 1.0f,
+                            1.0f, 1.0f, 1.0f, 1.0f
+                    );
+                    break;
+
+                case GREEN_LASER:
+                    setup(
+                            bulletPos.x + MathUtils.random(-4, 4), bulletPos.y + MathUtils.random(-4, 4),
+                            bulletVel.x * -0.3f + MathUtils.random(-20, 20), bulletVel.y * -0.3f + MathUtils.random(-20, 20),
+                            0.05f,
+                            1.2f, 2.2f,
+                            0.2f, 1.0f, 0.2f, 1.0f,
+                            0.3f, 1.0f, 0.3f, 1.0f
+                    );
+                    break;
+
+                case SUPER_LASER:
+                    setup(
+                            bulletPos.x + MathUtils.random(-4, 4), bulletPos.y + MathUtils.random(-4, 4),
+                            bulletVel.x * -0.3f + MathUtils.random(-20, 20), bulletVel.y * -0.3f + MathUtils.random(-20, 20),
+                            0.05f,
+                            1.7f, 2.5f,
+                            0.3f, 1.0f, 0.2f, 1.0f,
+                            1.0f, 1.0f, 0.3f, 1.0f
+                    );
+                    break;
             }
 
         }

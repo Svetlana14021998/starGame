@@ -11,7 +11,7 @@ import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
 
-public class Asteroid implements Poolable {
+public class Asteroid implements Poolable, Pushable {
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;

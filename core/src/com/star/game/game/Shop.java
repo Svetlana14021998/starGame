@@ -55,8 +55,11 @@ public class Shop extends Group {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (hero.isMoneyEnough(Hero.Skill.WEAPON.cost)) {
-                    if (hero.upgrade(Hero.Skill.WEAPON)) {
-                        hero.decreaseMoney(Hero.Skill.WEAPON.cost);
+                    if (hero.getWeaponNum() < hero.getWeapon().length - 1) {
+
+                        if (hero.upgrade(Hero.Skill.WEAPON)) {
+                            hero.decreaseMoney(Hero.Skill.WEAPON.cost);
+                        }
                     }
                 }
             }
@@ -113,6 +116,22 @@ public class Shop extends Group {
 
         btnTimer.setPosition(120, 320);
         this.addActor(btnTimer);
+
+        final TextButton btnCritical = new TextButton("Critical", textButtonStyle);
+        btnCritical.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (hero.isMoneyEnough(Hero.Skill.CRITICAL.cost)) {
+                    if (hero.upgrade(Hero.Skill.CRITICAL)) {
+                        hero.decreaseMoney(Hero.Skill.CRITICAL.cost);
+                    }
+
+                }
+            }
+        });
+
+        btnCritical.setPosition(120, 220);
+        this.addActor(btnCritical);
 
         final TextButton btnClose = new TextButton("X", textButtonStyle);
         final Shop thisShop = this;

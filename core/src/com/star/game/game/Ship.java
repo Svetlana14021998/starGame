@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.star.game.screen.ScreenManager;
 
 
-public class Ship {
+public class Ship implements Pushable {
     protected GameController gc;
     protected TextureRegion texture;
     protected Vector2 position;
@@ -24,6 +24,23 @@ public class Ship {
     protected Weapon[] weapons;
     protected int weaponNum;
     protected OwnerType ownerType;
+    protected WeaponType weaponType;
+
+    public void resurrection(){
+        hp = hpMax;
+    }
+
+    public int getHpMax() {
+        return hpMax;
+    }
+
+    public WeaponType getWeaponType() {
+        return weaponType;
+    }
+
+    public int getWeaponNum() {
+        return weaponNum;
+    }
 
     public OwnerType getOwnerType() {
         return ownerType;
@@ -35,6 +52,10 @@ public class Ship {
 
     public Weapon getCurrentWeapon() {
         return currentWeapon;
+    }
+
+    public Weapon[] getWeapon() {
+        return weapons;
     }
 
     public Circle getSearchArea() {
@@ -62,7 +83,7 @@ public class Ship {
         this.hpMax = hpMax;
         this.hp = hpMax;
         this.position = new Vector2(x, y);
-        this.hitArea = new Circle(position, 26);
+        this.hitArea = new Circle(position, 32);
         this.searchArea = new Circle(position, 100);
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
