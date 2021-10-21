@@ -11,7 +11,7 @@ import com.star.game.screen.utils.Assets;
 
 public class ScreenManager {
     public enum ScreenType {
-        GAME, MENU, PAUSE, GAMEOVER
+        GAME, MENU, GAMEOVER, WIN
     }
 
     public static final int SCREEN_WIDTH = 1280;
@@ -25,6 +25,7 @@ public class ScreenManager {
     private GameScreen gameScreen;
     private MenuScreen menuScreen;
     private GameOverScreen gameOverScreen;
+    private WinScreen winScreen;
     private Screen targetScreen;
     private Viewport viewport;
 
@@ -50,6 +51,7 @@ public class ScreenManager {
         this.menuScreen = new MenuScreen(batch);
         this.loadingScreen = new LoadingScreen(batch);
         this.gameOverScreen = new GameOverScreen(batch);
+        this.winScreen = new WinScreen(batch);
     }
 
     public void resize(int width, int height) {
@@ -57,7 +59,7 @@ public class ScreenManager {
         viewport.apply();
     }
 
-    public void changeScreen(ScreenType type,Object... args) {
+    public void changeScreen(ScreenType type, Object... args) {
         Screen screen = game.getScreen();
         Assets.getInstance().clear();
         if (screen != null) {
@@ -79,6 +81,10 @@ public class ScreenManager {
                 gameOverScreen.setDefeatedHero((Hero) args[0]);
                 Assets.getInstance().loadAssets(ScreenType.GAMEOVER);
                 break;
+            case WIN:
+                targetScreen = winScreen;
+                winScreen.setDefeatedHero((Hero) args[0]);
+                Assets.getInstance().loadAssets(ScreenType.WIN);
         }
     }
 

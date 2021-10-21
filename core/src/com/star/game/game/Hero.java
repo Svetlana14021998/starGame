@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.StringBuilder;;
 import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
-public class Hero extends Ship{
+public class Hero extends Ship {
     public enum Skill {
-        HP_MAX(20), HP(20), WEAPON(100), MAGNET(50), TIMER(30);
+        HP_MAX(20), HP(20), WEAPON(1), MAGNET(50), TIMER(30), CRITICAL(50);
 
         int cost;
 
@@ -72,12 +72,13 @@ public class Hero extends Ship{
     }
 
     public Hero(GameController gc, BotHelper botHelper) {
-        super(gc,100,640, 360);
+        super(gc, 100, 640, 360);
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");
         this.enginePower = 500.0f;
         this.money = 100;
         this.shop = new Shop(this);
         this.stringBuilder = new StringBuilder();
+        this.weaponType = WeaponType.LASER;
         createWeapons();
         this.weaponNum = 0;
         this.currentWeapon = weapons[weaponNum];
@@ -157,6 +158,12 @@ public class Hero extends Ship{
             case MAGNET:
                 searchArea.radius += 10;
                 return true;
+            case CRITICAL:
+                if (critical < 100) {
+                    critical += 5;
+                    return true;
+                }
+
         }
         return false;
 
@@ -175,16 +182,16 @@ public class Hero extends Ship{
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            rotate(180.0f,dt);
+            rotate(180.0f, dt);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            rotate(-180.0f,dt);
+            rotate(-180.0f, dt);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             accelerate(dt);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-          brake(dt);
+            brake(dt);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
             shop.setVisible(true);
@@ -222,20 +229,20 @@ public class Hero extends Ship{
     private void createWeapons() {
         weapons = new Weapon[]{
                 new Weapon(
-                        gc, this, "Laser", 0.2f, 1, 600, 300,
+                        gc, this,weaponType, 0.2f, 1, 600, 300,
                         new Vector3[]{
                                 new Vector3(28, 90, 0),
                                 new Vector3(28, -90, 0)
                         }),
                 new Weapon(
-                        gc, this, "Laser", 0.2f, 1, 600, 300,
+                        gc, this, weaponType, 0.2f, 1, 600, 300,
                         new Vector3[]{
                                 new Vector3(28, 0, 0),
                                 new Vector3(28, 90, 20),
                                 new Vector3(28, -90, -20)
                         }),
                 new Weapon(
-                        gc, this, "Laser", 0.2f, 1, 600, 500,
+                        gc, this, weaponType, 0.2f, 1, 600, 500,
                         new Vector3[]{
                                 new Vector3(28, 0, 0),
                                 new Vector3(28, 90, 10),
@@ -244,7 +251,7 @@ public class Hero extends Ship{
                                 new Vector3(28, -90, -20)
                         }),
                 new Weapon(
-                        gc, this, "Laser", 0.1f, 2, 600, 1000,
+                        gc, this, weaponType, 0.1f, 2, 600, 1000,
                         new Vector3[]{
                                 new Vector3(28, 0, 0),
                                 new Vector3(28, 90, 16),

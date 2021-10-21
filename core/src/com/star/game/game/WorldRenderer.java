@@ -48,20 +48,27 @@ public class WorldRenderer {
         ScreenUtils.clear(0, 0.2f, 0.5f, 1);
         batch.begin();
         gc.getBackground().render(batch);
-        gc.getAsteroidController().render(batch);
-        gc.getHero().render(batch);
-        if (gc.getBot().isAlive()){
-            gc.getBot().render(batch);
+
+        if (gc.getLevel() != gc.getBOSS_LEVEL()) {
+            gc.getAsteroidController().render(batch);
+            if (gc.getBot().isAlive()) {
+                gc.getBot().render(batch);
+            }
         }
 
         gc.getBotHelper().render(batch);
+
+        if (gc.getBotBoss().isAlive() && gc.getLevel() == gc.getBOSS_LEVEL()) {
+            gc.getBotBoss().render(batch);
+            gc.getBotBoss().renderHP(batch, font32);
+        }
+        gc.getHero().render(batch);
         gc.getBulletController().render(batch);
         gc.getPowerUpsController().render(batch);
         gc.getParticleController().render(batch);
         gc.getInfoController().render(batch, font32);
         batch.end();
         frameBuffer.end();
-
         batch.begin();
         batch.setShader(shaderProgram);
         shaderProgram.setUniformf("px", gc.getHero().getPosition().x / ScreenManager.SCREEN_WIDTH);
@@ -71,6 +78,9 @@ public class WorldRenderer {
         batch.setShader(null);
 
         gc.getHero().renderGUI(batch, font32);
+        if (gc.getBot().isAlive() && gc.getLevel() != gc.getBOSS_LEVEL()) {
+            gc.getBot().renderHP(batch, font32);
+        }
         if (gc.getRoundTimer() <= 3.0f) {
             stringBuilder.clear();
             stringBuilder.append("Level ").append(gc.getLevel());

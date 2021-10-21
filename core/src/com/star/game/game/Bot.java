@@ -1,5 +1,7 @@
 package com.star.game.game;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -7,15 +9,15 @@ import com.star.game.screen.ScreenManager;
 import com.star.game.screen.utils.Assets;
 
 
-public class Bot extends Ship {
+
+public class Bot extends Ship implements IsBot {
     private int critical;
     private Vector2 tempVector;
+    private StringBuilder strBuilder;
 
     public int getCritical() {
         return critical;
     }
-
-
 
 
     public Bot(GameController gc) {
@@ -27,10 +29,19 @@ public class Bot extends Ship {
         this.critical = 30;
         this.ownerType = OwnerType.BOT;
         this.tempVector = new Vector2();
+        this.weaponType = WeaponType.GREEN_LASER;
         createWeapons();
         this.weaponNum = 0;
         this.currentWeapon = weapons[weaponNum];
+        this.strBuilder = new StringBuilder();
     }
+
+public void renderHP(SpriteBatch batch, BitmapFont font){
+    strBuilder.setLength(0);
+    strBuilder.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
+    font.draw(batch, strBuilder, 1120, 700);
+}
+
 
     public void update(float dt) {
         super.update(dt);
@@ -61,7 +72,7 @@ public class Bot extends Ship {
     private void createWeapons() {
         weapons = new Weapon[]{
                 new Weapon(
-                        gc, this, "GreenLaser", 0.3f, 1, 600, 30000,
+                        gc, this, weaponType, 0.3f, 1, 600, 30000,
                         new Vector3[]{
                                 new Vector3(28, 90, 0),
                                 new Vector3(28, -90, 0)

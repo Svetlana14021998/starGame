@@ -8,7 +8,7 @@ import com.star.game.screen.utils.Assets;
 public class Weapon {
     private GameController gc;
     private Ship ship;
-    private String title;
+    protected WeaponType title;
     private float firePeriod;
     private int damage;
     private float bulletSpeed;
@@ -17,7 +17,7 @@ public class Weapon {
     private Vector3[] slots;
     private Sound shootSound;
 
-    public String getTitle() {
+    public WeaponType getTitle() {
         return title;
     }
 
@@ -37,12 +37,11 @@ public class Weapon {
         return curBullets;
     }
 
-    public Weapon(GameController gc, Ship ship, String title,
+    public Weapon(GameController gc, Ship ship, WeaponType title,
                   float firePeriod, int damage, float bulletSpeed,
                   int maxBullets, Vector3[] slots) {
         this.gc = gc;
         this.ship = ship;
-        this.title = title;
         this.firePeriod = firePeriod;
         this.damage = damage;
         this.bulletSpeed = bulletSpeed;
